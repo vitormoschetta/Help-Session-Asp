@@ -51,3 +51,39 @@ if(Context.Session.GetInt32("NomeSessao") == item.Id){
 HttpContext.Session.Remove("NomeSessao");
 ```
 
+
+# Estender uso de controle de Sessão no Repositorio:
+#### STARTUP
+Adicionar no método _ConfigureServices_:
+```
+services.AddHttpContextAccessor();
+```
+#### Repositorio:
+```
+public class ProdutoRepositorio
+{
+	private readonly IHttpContextAccessor _httpContextAccessor;
+ 	public BaseEletronicaRepository(IHttpContextAccessor httpContextAccessor)
+	{
+		_httpContextAccessor = httpContextAccessor;
+	}
+	
+	public void GravarSession()
+        {
+            _httpContextAccessor.HttpContext.Session.SetString("NomeSession", "valorSession");
+    	}
+	
+	public void BuscarSession()
+        {
+            var valorSession = _httpContextAccessor.HttpContext.Session.GetString("NomeSession");
+    	}
+	
+	public void LimparSession()
+        {
+            _httpContextAccessor.HttpContext.Session.Remove("NomeSession");
+   	}
+}
+```
+
+
+
